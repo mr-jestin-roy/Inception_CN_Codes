@@ -278,47 +278,41 @@ TreeNode<int>* nextLargerElement2(TreeNode<int> *root, int n) {
 
     return nullptr;
 }
-
 TreeNode <int>* secondLargest(TreeNode<int> *root) {
     /* Given a generic tree, find and return the node with second largest value
      * in given tree. Return NULL if no node with required value is present. */
-    if(root==nullptr) return nullptr;
-    int childCount = root->children.size();
-    if(childCount==0) return nullptr;
-
-    // we have atleast two nodes: root node and one child node
-    TreeNode<int> *largest = root, *secLargest=root->children[0];
-    if(largest->data<secLargest->data)
-    {
-        secLargest = root;
-        largest=root->children[0];
-    }
     queue<TreeNode<int>*> q;
+    
+    TreeNode<int>* large = new TreeNode<int>(0);
+    TreeNode<int>* secondLarge;
+    
+    if(root->children.size() < 1)
+        return 0;
+    
     q.push(root);
-    while(!q.empty())
-    {
-        TreeNode<int> *curr = q.front();
-        q.pop();
-        childCount = curr->children.size();
-        for(int i=0; i<childCount; i++)
-        {
-            q.push(curr->children[i]);
-            if(curr->children[i]->data > secLargest->data)
-            {
-                if(curr->children[i]->data > largest->data)
-                {
-                    secLargest = largest;
-                    largest = curr->children[i];
-                }
-                else
-                {
-                    secLargest = curr->children[i];
-                }
-            }
+    
+    while(!q.empty()){
+        if(q.front() -> data > large->data){
+            secondLarge = large;
+            large = q.front();
         }
+        else if(q.front()->data > secondLarge -> data){
+            if(q.front() -> data != large->data)
+                secondLarge = q.front();
+            else
+                return NULL;
+        }
+        
+        for(int i=0;i<root->children.size();i++)
+            q.push(root->children[i]);
+        
+        q.pop();
+        root=q.front();
     }
-    return secLargest;
+    return secondLarge;
 }
+
+
 
 void replaceWithDepthValueHelper(TreeNode<int> *root, int value){
     /* In a given Generic Tree, replace each node with its depth value. You need
